@@ -1,12 +1,19 @@
-"""Program that will ask for hex translactions and you have to enter the answer
+help = """
+NAME
+    hexipy -- Learning tool to test and strengthen your hexadecimal conversion 
 
-Example Questions:
+DESCRIPTION
+    Hex values are chosen at random and prompts the user to convert the value from/to any combination of hexadecimal, binary, or decimal.
 
-Options:
-Hex to Bin
-Bin to Hex
-Dec to Hex
-Hex to Dec
+    -h Print this and exit
+
+MODE
+    1. One-to-one : User chooses what units to use for conversion
+    2. Random     : From/To conversions are chosen at random
+    3. Exit       : Program exits
+ 
+RUNTIME CMD
+    x : Exit Program
 
 """
 from random import randint
@@ -15,7 +22,7 @@ import sys
 ONE_TO_ONE = 1
 RANDOM = 2
 EXIT = 3
-CHAR_EXIT = ['x','X','exit','EXIT']
+CHAR_EXIT = ['q','Q','quit','QUIT','x','X','exit','EXIT']
 
 HEX = 'h'
 BIN = 'b'
@@ -37,7 +44,6 @@ hex_values[3] = {HEX:'D',BIN:'1101',DEC:'13'}
 hex_values[4] = {HEX:'E',BIN:'1110',DEC:'14'}
 hex_values[5] = {HEX:'F',BIN:'1111',DEC:'15'}
 
-#Example Hex to Bin:
 class UserOpts(object):
     mode = None
     frm_unit = None 
@@ -49,13 +55,16 @@ class UserOpts(object):
         print "from Unit",UserOpts.frm_unit
         print "to unit",UserOpts.to_unit
 
-#print "What is %s from %s to %s? " % (hex_values[0][frm], opts[frm], opts[to])
-
 def exit(rc):
     print "Termination requested. Exiting."
     raise SystemExit(0)
 
 def change_frm_to():
+    """
+    Print menu that allows a user to change the
+    From and To conversion options
+    """
+
     print "----------------------------"
     print " Choose Conversion Options"
     print "----------------------------"
@@ -91,7 +100,8 @@ def change_frm_to():
     get_to()
 
 def change_mode():
-    """Prompts user to change the mode"""
+    """Menu that allows the user to change the mode
+       of the program"""
 
     print "---------------"
     print " Mode Options:"
@@ -113,9 +123,8 @@ def change_mode():
         elif user_choice == EXIT:
             exit(0)
         else: 
-            #global mode
             UserOpts.mode = user_choice
-            print "Mode is set to", mode_opts[mode]
+            print "Mode is set to", mode_opts[UserOpts.mode]
 
             if UserOpts.mode == 1:
                 """Need to askwhat to change from to"""
@@ -133,10 +142,6 @@ def change_mode():
         print "--------"
         change_mode()
 
-class ChangeModeRequest(Exception):
-    def __init__(self):
-        Exception.__init__(self)
-
 def start_one_to_one_mode():
     while True:
         hex_val = randint(0,len(hex_values)- 1)
@@ -144,13 +149,15 @@ def start_one_to_one_mode():
         print "What is %s, from %s to %s" % (hex_values[hex_val][UserOpts.frm_unit], hex_opts[UserOpts.frm_unit], hex_opts[UserOpts.to_unit])
 
         user_answer = raw_input()
-
-        if user_answer == hex_values[hex_val][UserOpts.to_unit]:
+        correct_answer = hex_values[hex_val][UserOpts.to_unit];
+        if user_answer == correct_answer:
             print "Correct"
         elif user_answer in CHAR_EXIT:
             exit(0)
+        elif user_answer == 'm':
+            main_menu()
         else:
-            print "Incorrect"
+            print "Incorrect. Correct answer:", correct_answer
 
         print "---------------------------------"
 
@@ -183,12 +190,13 @@ def start_random_mode():
         else:
             print "Incorrect. Right Answer:", correct_answer
 
-        print "---------------------------------"
+        print "------------------------------"
 
-if __name__ == "__main__":
-    print "Welcome to Hexifpy"
+def main_menu():
     change_mode()
-    print "Starting. Press 'x' at any point to exit"
+    print "------------"
+    print "Starting.\n Press 'x' to exit"
+    print "------------"
     
     if UserOpts.mode == ONE_TO_ONE:
         start_one_to_one_mode()
@@ -197,4 +205,13 @@ if __name__ == "__main__":
     else:
         print "Invalid mode found. Mode",UserOpts.mode
         exit(1)
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "-h":
+            print help
+            sys.exit(0)
+
+    print "Welcome to Hexipy"
+    main_menu()
 
