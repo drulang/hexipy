@@ -1,6 +1,6 @@
 help = """
 NAME
-    hexipy -- Learning tool to test and strengthen your hexadecimal conversion 
+    hexipy -- Learning tool to test and strengthen your mental hexadecimal conversion 
 
 DESCRIPTION
     Hex values are chosen at random and prompts the user to convert the value from/to any combination of hexadecimal, binary, or decimal.
@@ -13,16 +13,21 @@ MODE
     3. Exit       : Program exits
  
 RUNTIME CMD
+    m : Main Menu
+    h : Help Menu
     x : Exit Program
 
 """
 from random import randint
 import sys
 
+#TODO: Reorg globals
 ONE_TO_ONE = 1
 RANDOM = 2
 EXIT = 3
-CHAR_EXIT = ['q','Q','quit','QUIT','x','X','exit','EXIT']
+EXIT_CHAR = ['q','Q','quit','QUIT','x','X','exit','EXIT']
+HELP_MENU_CHAR = ['h','H','help','HELP']
+MAIN_MENU_CHAR = ['m','M','main','MAIN']
 
 HEX = 'h'
 BIN = 'b'
@@ -142,21 +147,32 @@ def change_mode():
         print "--------"
         change_mode()
 
+def get_user_answer():
+    user_answer = raw_input().strip().upper()
+
+    if user_answer in EXIT_CHAR:
+        exit(0)
+    elif user_answer in MAIN_MENU_CHAR:
+        main_menu()
+    elif user_answer in HELP_MENU_CHAR :
+        help_menu()  
+        return 
+    else:
+        return user_answer
+
 def start_one_to_one_mode():
     while True:
         hex_val = randint(0,len(hex_values)- 1)
 
         print "What is %s, from %s to %s" % (hex_values[hex_val][UserOpts.frm_unit], hex_opts[UserOpts.frm_unit], hex_opts[UserOpts.to_unit])
 
-        user_answer = raw_input().upper()
+        user_answer = get_user_answer()
         correct_answer = hex_values[hex_val][UserOpts.to_unit];
 
         if user_answer == correct_answer:
             print "Correct"
-        elif user_answer in CHAR_EXIT:
-            exit(0)
-        elif user_answer == 'M':
-            main_menu()
+        elif user_answer is None:
+            pass #Indicates help menu was selected from get_user_answer()
         else:
             print "Incorrect. Correct answer:", correct_answer
 
@@ -181,15 +197,13 @@ def start_random_mode():
 
         print "What is %s, from %s to %s" % (hex_values[hex_val][rand_frm], hex_opts[rand_frm], hex_opts[rand_to])
 
-        user_answer = raw_input().upper()
+        user_answer = get_user_answer() 
         correct_answer = hex_values[hex_val][rand_to]
 
         if user_answer == correct_answer:
             print "Correct"
-        elif user_answer in CHAR_EXIT:
-            exit(0)
-        elif user_answer == 'M':
-            main_menu()
+        elif user_answer is None:
+            pass
         else:
             print "Incorrect. Right Answer:", correct_answer
 
@@ -208,6 +222,18 @@ def main_menu():
     else:
         print "Invalid mode found. Mode",UserOpts.mode
         exit(1)
+
+def help_menu():
+    """Print Help stuff. Not really a menu, but it'll do"""
+
+    print "------------------"
+    print "      Help!"
+    print "------------------"
+    print " (m) -> Main Menu"
+    print " (h) -> Help Menu"
+    print " (x) -> Exit Prog"
+    print "------------------"
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:
