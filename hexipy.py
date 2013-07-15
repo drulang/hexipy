@@ -130,8 +130,8 @@ def change_mode():
                 """Need to askwhat to change from to"""
                 change_frm_to()
             elif UserOpts.mode == 2:
-                frm = None
-                to = None
+                UserOpts.from_unit = None
+                UserOpts.to_unit = None
             else:
                 print "Invalid Mode detected. Exiting."
                 exit(0)
@@ -148,13 +148,14 @@ def start_one_to_one_mode():
 
         print "What is %s, from %s to %s" % (hex_values[hex_val][UserOpts.frm_unit], hex_opts[UserOpts.frm_unit], hex_opts[UserOpts.to_unit])
 
-        user_answer = raw_input()
+        user_answer = raw_input().upper()
         correct_answer = hex_values[hex_val][UserOpts.to_unit];
+
         if user_answer == correct_answer:
             print "Correct"
         elif user_answer in CHAR_EXIT:
             exit(0)
-        elif user_answer == 'm':
+        elif user_answer == 'M':
             main_menu()
         else:
             print "Incorrect. Correct answer:", correct_answer
@@ -187,6 +188,8 @@ def start_random_mode():
             print "Correct"
         elif user_answer in CHAR_EXIT:
             exit(0)
+        elif user_answer == 'M':
+            main_menu()
         else:
             print "Incorrect. Right Answer:", correct_answer
 
